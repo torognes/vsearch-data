@@ -24,28 +24,7 @@ VSEARCH=$(which vsearch)
 DESCRIPTION="check if vsearch is in the PATH"
 [[ "${VSEARCH}" ]] && success "${DESCRIPTION}" || failure "${DESCRIPTION}"
 
-#*****************************************************************************#
-#                                                                             #
-#               Segmentation fault with empty query (issue 171)               #
-#                                                                             #
-#*****************************************************************************#
-
-DESCRIPTION="segmentation fault when a query is empty"
-QUERY=$(mktemp)
-DATABASE=$(mktemp)
-ALNOUT=$(mktemp)
-SEQ="GTCGCTACTACCGATTGAACGTTTTAGTGAGGTCCTCGGACTGTTTGGTAGTCGGATCACTCTGACTGCCTGG"
-printf ">seq1\n\n" ${SEQ} > "${QUERY}"
-printf ">ref1\n%s\n" ${SEQ} > "${DATABASE}"
-
-"${VSEARCH}" \
-    --usearch_global "${QUERY}" \
-    -db "${DATABASE}" \
-    --alnout "${ALNOUT}" \
-    --id 0.97 --quiet
-
 
 ## Clean
-rm "${QUERY}" "${DATABASE}" "${ALNOUT}"
 
 exit 0
