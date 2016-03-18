@@ -31,8 +31,12 @@ DESCRIPTION="check if vsearch is in the PATH"
 #                                                                             #
 #*****************************************************************************#
 
+## Find the absolute path to the fastq file suite
+path=$(pwd)
+path=${path/vsearch-data*/vsearch-data\/fastq-test-suite\/}
+
 ## Return status should be zero (success)
-find ../../fastq-test-suite/ -name "*.fastq" ! -name "error*" -print | \
+find "${path}" -name "*.fastq" ! -name "error*" -print | \
     while read f ; do
         DESCRIPTION="vsearch: $(basename ${f}) is a valid file"
         "${VSEARCH}" --fastq_chars "${f}" 2> /dev/null > /dev/null && \
@@ -41,7 +45,7 @@ find ../../fastq-test-suite/ -name "*.fastq" ! -name "error*" -print | \
     done
 
 ## Return status should be !zero (failure)
-find ../../fastq-test-suite/ -name "error*.fastq" -print | \
+find "${path}" -name "error*.fastq" -print | \
     while read f ; do
         DESCRIPTION="vsearch: $(basename ${f}) is an invalid file"
         "${VSEARCH}" --fastq_chars "${f}" 2> /dev/null > /dev/null && \
