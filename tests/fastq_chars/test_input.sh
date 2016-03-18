@@ -32,7 +32,7 @@ DESCRIPTION="check if vsearch is in the PATH"
 #*****************************************************************************#
 
 ## Find the absolute path to the fastq file suite
-path=$(pwd)
+path=${PWD}
 path=${path/vsearch-data*/vsearch-data\/fastq-test-suite\/}
 
 ## Return status should be zero (success)
