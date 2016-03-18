@@ -31,16 +31,12 @@ DESCRIPTION="check if vsearch is in the PATH"
 #                                                                             #
 #*****************************************************************************#
 
-## Return status should be 0 after -h (GNU standards)
-DESCRIPTION="return status should be 0 after -h"
-"${VSEARCH}" -h 2> /dev/null > /dev/null && \
-    success "${DESCRIPTION}" || \
-        failure "${DESCRIPTION}"
-
-## Return status should be 0 after -v (GNU standards)
-DESCRIPTION="return status should be 0 after -v"
-"${VSEARCH}" -v 2> /dev/null > /dev/null && \
-    success "${DESCRIPTION}" || \
-        failure "${DESCRIPTION}"
+## Return status should be 0 after -h and -v (GNU standards)
+for OPTION in "-h" "-v" ; do
+    DESCRIPTION="return status should be 0 after ${OPTION}"
+    "${VSEARCH}" "${OPTION}" 2> /dev/null > /dev/null && \
+        success "${DESCRIPTION}" || \
+            failure "${DESCRIPTION}"
+done
 
 exit 0
