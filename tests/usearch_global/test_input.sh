@@ -41,13 +41,26 @@ printf ">ref1\n\n" ${SEQ} > "${DATABASE}"
 
 "${VSEARCH}" \
     --usearch_global "${QUERY}" \
-    -db "${DATABASE}" \
+    --db "${DATABASE}" \
     --alnout "${ALNOUT}" \
-    --id 0.97 --quiet 2> /dev/null && \
+    --id 0.97 \
+    --quiet 2> /dev/null && \
     success  "${DESCRIPTION}" || \
         failure "${DESCRIPTION}"
 
 ## Clean
 rm "${QUERY}" "${DATABASE}" "${ALNOUT}"
+
+
+#*****************************************************************************#
+#                                                                             #
+#                                    Next                                     #
+#                                                                             #
+#*****************************************************************************#
+
+# does it make a difference if database sequences are
+# reverse-complemented? Some search tools are very asymetrical. Test
+# that with stampa.
+
 
 exit 0
