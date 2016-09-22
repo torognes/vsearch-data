@@ -31,24 +31,20 @@ DESCRIPTION="check if vsearch is in the PATH"
 #                                                                             #
 #*****************************************************************************#
 
+# usearch 6, 7 and 8 output a "=" when the sequences are identical
 DESCRIPTION="CIGAR alignment is \"=\" when the sequences are identical"
-FASTA=$(mktemp)
-UC_OUT=$(mktemp)
-SEQ="ACGT"
-printf ">seq1\nACGT\n>seq2\nACGT\n" > "${FASTA}"
+UC_OUT=$("${VSEARCH}" \
+             --cluster_fast <(printf ">seq1\nACGT\n>seq2\nACGT\n") \
+             --id 0.97 \
+             --quiet \
+             --minseqlength 1 \
+             --uc - | grep "^H" | cut -f 8)
 
-"${VSEARCH}" \
-    --cluster_fast "${FASTA}" \
-    --id 0.97 \
-    --uc "${UC_OUT}" \
-    --minseqlength 1 \
-    --quiet
-
-[[ $(grep "^H" "${UC_OUT}" | cut -f 8) == "=" ]] && \
+[[ "${UC_OUT}" == "=" ]] && \
     success  "${DESCRIPTION}" || \
         failure "${DESCRIPTION}"
 
-## Clean
-rm "${FASTA}" "${UC_OUT}"
+# clean
+unset UC_OUT
 
 exit 0
