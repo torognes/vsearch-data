@@ -12,7 +12,7 @@ NO_COLOR="\033[0m"
 
 failure () {
     printf "${RED}FAIL${NO_COLOR}: ${1}\n"
-    exit -1
+    # exit -1
 }
 
 success () {
@@ -67,17 +67,17 @@ s=$(printf ">seq1;size=3;\nACGT\n>seq2;size=1;\nACGT\n" | \
 (( ${s} == 4 )) && \
     success  "${DESCRIPTION}" || \
         failure "${DESCRIPTION}"
+
 # clean
 unset s
 
 
 ## vsearch reports H record when sequences have the same length
 DESCRIPTION="when prefix dereplicating same length sequences, --uc reports H record"
-H=$(printf ">seq1;size=3;\nACGT\n>seq2;size=1;\nACGT\n" | \
+H=$(printf ">seq1\nACGT\n>seq2\nACGT\n" | \
            "${VSEARCH}" \
                --derep_prefix - \
                --quiet \
-               --sizein \
                --minseqlength 1 \
                --uc - | grep "^H")
 
@@ -85,15 +85,15 @@ H=$(printf ">seq1;size=3;\nACGT\n>seq2;size=1;\nACGT\n" | \
     success  "${DESCRIPTION}" || \
         failure "${DESCRIPTION}"
 
+# clean
 unset H
 
 ## vsearch reports H record when sequences have different lengths
 DESCRIPTION="when prefix dereplicating a shorter sequence, --uc reports H record"
-H=$(printf ">seq1;size=3;\nACGTA\n>seq2;size=1;\nACGT\n" | \
+H=$(printf ">seq1\nACGTA\n>seq2\nACGT\n" | \
            "${VSEARCH}" \
                --derep_prefix - \
                --quiet \
-               --sizein \
                --minseqlength 1 \
                --uc - | grep "^H")
 
@@ -101,7 +101,59 @@ H=$(printf ">seq1;size=3;\nACGTA\n>seq2;size=1;\nACGT\n" | \
     success  "${DESCRIPTION}" || \
         failure "${DESCRIPTION}"
 
+## clean
 unset H
+
+
+## --derep_prefix does not support the option --strand
+DESCRIPTION="--derep_prefix does not support the option --strand"
+printf ">seq1\nAATT\n>seq2\nTTAA\n" | \
+    "${VSEARCH}" \
+        --derep_prefix - \
+        --quiet \
+        --strand both \
+        --minseqlength 1 \
+        --uc - 2> /dev/null && \
+    failure "${DESCRIPTION}" || \
+        success  "${DESCRIPTION}"
+
+# clean
+unset H
+
+
+## --derep_fulllength accepts the option --strand
+DESCRIPTION="--derep_fulllength accepts the option --strand"
+printf ">seq1\nAATT\n>seq2\nTTAA\n" | \
+    "${VSEARCH}" \
+        --derep_fulllength - \
+        --quiet \
+        --strand both \
+        --minseqlength 1 \
+        --uc /dev/null 2> /dev/null && \
+    success  "${DESCRIPTION}" || \
+        failure "${DESCRIPTION}"
+
+# clean
+unset H
+
+
+## --derep_fulllength searches both strands
+DESCRIPTION="--derep_fulllength searches both strands"
+C=$(printf ">seq1\nAACC\n>seq2\nGGTT\n" | \
+           "${VSEARCH}" \
+               --derep_fulllength - \
+               --quiet \
+               --strand both \
+               --minseqlength 1 \
+               --uc - | grep -c "^C")
+
+# There should be only cluster
+(( ${C} == 1 )) && \
+    success  "${DESCRIPTION}" || \
+        failure "${DESCRIPTION}"
+
+# clean
+unset C
 
 
 exit 0
