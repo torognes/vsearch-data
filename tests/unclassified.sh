@@ -48,6 +48,23 @@ UC_OUT=$("${VSEARCH}" \
 unset UC_OUT
 
 
+## is the 3rd column of H the query length or the alignment length?
+DESCRIPTION="3rd column of H is the query length"
+UC_OUT=$("${VSEARCH}" \
+             --cluster_fast <(printf ">seq1\nACGT\n>seq2\nACAGT\n") \
+             --id 0.5 \
+             --quiet \
+             --minseqlength 1 \
+             --uc - | grep "^H")
+
+awk 'BEGIN {FS = "\t"} {$3 == 4 && $9 == "seq1"}' <<< "${UC_OUT}" && \
+    success  "${DESCRIPTION}" || \
+        failure "${DESCRIPTION}"
+
+## clean
+unset UC_OUT
+
+
 #*****************************************************************************#
 #                                                                             #
 #                        UC format when dereplicating                         #
