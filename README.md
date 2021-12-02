@@ -6,7 +6,7 @@ BioMarKs.fsa is a larger dataset with 119,117,805 nt in 312,503 seqs, from 2 to 
 
 constaint.fsa.bz2 - fasta file for constraint checking, i.e. special cases such as 2048-long reads that can break the code
 
-PR2-18S-rRNA-V4.fsa is the latest 18S rRNA V4 reference from PR2 (http://ssu-rrna.org/).
+PR2-18S-rRNA-V4.fsa is the older 18S rRNA V4 reference from PR2 (https://pr2-database.org/).
 
 Rfam_9_1.fasta is a dataset with 33,931,362 nt in 192,445 seqs, from 20 to 1,250 nt (avg 176). It is Rfam release v9.1 (Gardner et al., 2009). It was used for USEARCH testing in Edgar's paper. Source: ftp://ftp.ebi.ac.uk/pub/databases/Rfam/9.1/Rfam.fasta.gz
 
